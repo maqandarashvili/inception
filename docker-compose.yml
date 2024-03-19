@@ -1,0 +1,38 @@
+version: '3.7'
+services:
+    app:
+        image: webdevops/php-nginx:8.1
+        container_name: laravel_app
+        restart: unless-stopped
+        volumes:
+            - ./:/app
+        environment:
+            - WEB_DOCUMENT_ROOT=/app/public
+        ports:
+            - "8000:80"
+        depends_on:
+            - db
+            - redis
+
+    db:
+        image: mariadb:latest
+        container_name: mariadb
+        restart: unless-stopped
+        volumes:
+            - dbdata:/var/lib/mysql
+        environment:
+            MYSQL_DATABASE: laravel
+            MYSQL_USER: root
+            MYSQL_PASSWORD: password
+            MYSQL_ROOT_PASSWORD: password
+        ports:
+            - "3306:3306"
+
+    redis:
+        image: redis:alpine
+        container_name: redis
+        ports:
+            - "6379:6379"
+
+volumes:
+    dbdata:
